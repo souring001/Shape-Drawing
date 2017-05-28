@@ -1,0 +1,44 @@
+package pro3.parser;
+
+import java.util.Scanner;
+import java.util.HashMap;
+import pro3.shape.ShapeManager;
+import pro3.target.Target;
+
+class TargetParser implements MetaParser{
+  final Target target;
+  final ShapeManager shapemanager;
+  HashMap<String,MetaParser> map;
+  TargetParser(Target tgt,ShapeManager sm){
+    target = tgt;
+    shapemanager = sm;
+    map = new HashMap<String,MetaParser>();
+    map.put("draw", new DrawParser());
+    map.put("flush", new FlushParser());
+    map.put("clear", new ClearParser());
+  }
+
+  public void parse(Scanner s){
+   String token = s.next();
+   MetaParser mp = map.get(token);
+   mp.parse(s);
+  }
+
+  public class DrawParser implements MetaParser{
+    public void parse(Scanner s){
+      target.draw(shapemanager);
+    }
+  }
+
+  public class FlushParser implements MetaParser{
+    public void parse(Scanner s){
+      target.flush();
+    }
+  }
+
+  public class ClearParser implements MetaParser{
+    public void parse(Scanner s){
+      shapemanager.clear();
+    }
+  }
+}
